@@ -1,7 +1,7 @@
 /* Mente Confusa — offline + atualização automática.
    HTML: rede primeiro (para pegar versões novas), cache como reserva.
    Estáticos: cache primeiro com revalidação em segundo plano. */
-const CACHE = 'mente-confusa-v4';
+const CACHE = 'mente-confusa-v5';
 const ASSETS = [
   './',
   './index.html',

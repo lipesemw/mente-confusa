@@ -104,6 +104,7 @@
   }
 
   function back() {
+    if (currentScreen === 'online' && online) onlineLeave(true);
     const prev = navStack.pop() || 'home';
     setScreen(prev);
     if (renderers[prev]) renderers[prev]();
@@ -1367,6 +1368,7 @@
     online.client = client;
 
     client.on('connect', () => {
+      if (!online) return;
       online.connected = true;
       online.closed = false;
       client.subscribe(online.topic, { qos: 0 });
@@ -1391,7 +1393,7 @@
         clearInterval(online.watchTimer);
         online.watchTimer = setInterval(() => {
           if (!online || online.role !== 'guest') return;
-          if (Date.now() - online.lastSeen > 20000) {
+          if (Date.now() - online.lastSeen > 45000) {
             clearInterval(online.watchTimer);
             Modal.open({
               title: 'Conexão perdida',
@@ -1403,9 +1405,9 @@
       }
       renderOnlineRoom();
     });
-    client.on('reconnect', () => { online.connected = false; renderOnlineRoom(); });
-    client.on('close', () => { online.connected = false; renderOnlineRoom(); });
-    client.on('error', () => { online.connected = false; renderOnlineRoom(); });
+    client.on('reconnect', () => { if (!online) return; online.connected = false; renderOnlineRoom(); });
+    client.on('close', () => { if (!online) return; online.connected = false; renderOnlineRoom(); });
+    client.on('error', () => { if (!online) return; online.connected = false; renderOnlineRoom(); });
     client.on('message', (topic, payload) => onOnlineMessage(topic, payload));
 
     setScreen('online');
@@ -1900,8 +1902,9 @@
   function onlineLeave(quiet) {
     if (!online) return;
     const wasHost = online.role === 'host';
+    const client = online.client;
     try {
-      if (online.client) {
+      if (client) {
         if (wasHost) sendOnline({ t: 'closed' });
         sendOnline({ t: 'bye', pid: online.pid });
       }
@@ -1911,7 +1914,8 @@
     clearTimeout(online.joinTimer);
     clearInterval(online.hbTimer);
     clearInterval(online.watchTimer);
-    try { online.client && online.client.end(true); } catch (_) {}
+    // Espera o envio das mensagens sair antes de fechar o socket.
+    if (client) setTimeout(() => { try { client.end(true); } catch (_) {} }, 300);
     cancelAnimationFrame(run && run.raf);
     online = null;
     run = null;
@@ -2052,6 +2056,24 @@
 
   function confirmQuit() {
     if (!run || run.finished) { go('home'); return; }
+    if (run.mode === 'online') {
+      Modal.open({
+        title: 'Sair da sala?',
+        body: '<p>Você vai sair da partida online e os outros jogadores serão avisados.</p>',
+        actions: [
+          { label: 'CONTINUAR JOGANDO', primary: true, onClick: () => {} },
+          {
+            label: 'SAIR DA SALA',
+            onClick: () => {
+              onlineLeave(true);
+              navStack = [];
+              go('home');
+            },
+          },
+        ],
+      });
+      return;
+    }
     if (run.mode === 'multi') {
       Modal.open({
         title: 'Encerrar a partida?',
