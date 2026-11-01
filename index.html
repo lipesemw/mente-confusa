@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0a0718">
+<meta name="description" content="Mente Confusa: quiz de pegadinhas, lógica e curiosidades. Trilha de fases, combos, vidas e ranking local.">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Mente Confusa">
+<title>Mente Confusa — o quiz que embaralha sua cabeça</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="css/style.css?v=7">
+</head>
+<body>
+
+<div class="bg" aria-hidden="true">
+  <span class="blob blob-1"></span>
+  <span class="blob blob-2"></span>
+  <span class="blob blob-3"></span>
+  <span class="grid-glow"></span>
+</div>
+
+<main class="app" id="app">
+
+  <!-- ============ HOME ============ -->
+  <section class="screen" id="screen-home" data-screen="home" aria-label="Início">
+    <header class="topbar">
+      <div class="brand"><span class="brand-mark" aria-hidden="true">🧠</span>MENTE<em>CONFUSA</em></div>
+      <button class="icon-btn" id="btn-sound" type="button" aria-label="Ativar ou desativar som">🔊</button>
+    </header>
+
+    <div class="profile-card">
+      <button class="avatar-btn" id="btn-profile" type="button" aria-label="Editar perfil">
+        <span id="home-avatar">🦊</span><i class="cam" aria-hidden="true">✎</i>
+      </button>
+      <div class="profile-info">
+        <div class="profile-name" id="home-name">Jogador</div>
+        <div class="level-row">
+          <span class="level-badge" id="home-level">Nível 1</span>
+          <span class="xp-text" id="home-xp">0 / 250 XP</span>
+        </div>
+        <div class="xp-bar" role="progressbar" aria-label="Experiência"><i id="home-xp-bar"></i></div>
+      </div>
+      <div class="coin-chip" title="Moedas"><i class="coin-ico" aria-hidden="true"></i><span id="home-coins">0</span></div>
+    </div>
+
+    <div class="hero">
+      <h1>MENTE<br><span>CONFUSA</span></h1>
+      <p>Será que você consegue pensar direito?</p>
+    </div>
+
+    <div class="stat-strip" id="home-strip"></div>
+
+    <button class="cta" id="btn-play" type="button">
+      <span class="cta-icon" aria-hidden="true">▶</span>
+      <span class="cta-text"><b id="play-label">JOGAR</b><small id="play-sub">Comece pela primeira fase</small></span>
+      <span class="cta-arrow" aria-hidden="true">›</span>
+    </button>
+
+    <button class="cta multi" id="btn-multi" type="button">
+      <span class="cta-icon" aria-hidden="true">👥</span>
+      <span class="cta-text"><b>JOGAR COM AMIGOS</b><small>2 a 4 jogadores neste celular</small></span>
+      <span class="cta-arrow" aria-hidden="true">›</span>
+    </button>
+
+    <nav class="menu-grid" aria-label="Menu principal">
+      <button class="menu-card" type="button" data-go="trail">
+        <span class="menu-emoji" aria-hidden="true">🗺️</span>
+        <span class="menu-title">Trilha</span>
+        <small id="trail-progress">0 / 18 fases</small>
+      </button>
+      <button class="menu-card" type="button" data-go="daily">
+        <span class="menu-emoji" aria-hidden="true">📅</span>
+        <span class="menu-title">Desafio diário</span>
+        <small id="daily-status">Disponível</small>
+      </button>
+      <button class="menu-card" type="button" data-go="ranking">
+        <span class="menu-emoji" aria-hidden="true">🏆</span>
+        <span class="menu-title">Ranking</span>
+        <small id="rank-best">Sem recorde</small>
+      </button>
+      <button class="menu-card" type="button" data-go="shop">
+        <span class="menu-emoji" aria-hidden="true">🛒</span>
+        <span class="menu-title">Loja</span>
+        <small id="shop-count">3 itens</small>
+      </button>
+    </nav>
+
+    <p class="tagline">Conhecimento • Pegadinhas • Lógica • Curiosidades</p>
+    <button class="link-btn" id="btn-howto" type="button">Como jogar</button>
+  </section>
+
+  <!-- ============ TRAIL ============ -->
+  <section class="screen" id="screen-trail" data-screen="trail" aria-label="Trilha de fases">
+    <header class="subhead">
+      <button class="icon-btn" data-back type="button" aria-label="Voltar">‹</button>
+      <div><h2>Trilha</h2><small id="trail-sub">18 fases • 6 mundos</small></div>
+      <div class="coin-chip"><i class="coin-ico" aria-hidden="true"></i><span class="coins-out">0</span></div>
+    </header>
+    <div id="trail-list" class="trail-list"></div>
+  </section>
+
+  <!-- ============ GAME ============ -->
+  <section class="screen screen-game" id="screen-game" data-screen="game" aria-label="Partida">
+    <header class="game-top">
+      <button class="icon-btn" id="btn-quit" type="button" aria-label="Sair da partida">✕</button>
+      <div class="game-title"><b id="game-world">Pegadinhas</b><small id="game-fase">Fase 1 • Aquecimento</small></div>
+      <div class="hearts" id="game-hearts" aria-label="Vidas"></div>
+    </header>
+
+    <div class="multi-strip" id="multi-strip" hidden aria-label="Placar do multijogador"></div>
+
+    <div class="hud">
+      <div class="timer" id="timer-ring">
+        <div class="timer-inner"><span id="timer-num">15</span><small>s</small></div>
+      </div>
+      <div class="hud-mid">
+        <div class="hud-row">
+          <span>Pergunta <b id="game-qnum">1/5</b></span>
+          <span class="score-pill">⭐ <b id="game-score">0</b></span>
+        </div>
+        <div class="progress"><i id="game-progress"></i></div>
+        <div class="combo" id="game-combo">COMBO ×1</div>
+      </div>
+    </div>
+
+    <div class="question-wrap">
+      <div class="question-cat" id="game-cat">PEGADINHAS</div>
+      <div class="question-card" id="question-card"><p id="game-question"></p></div>
+    </div>
+
+    <div class="answers" id="game-answers" role="group" aria-label="Alternativas"></div>
+
+    <div class="feedback" id="game-feedback" hidden aria-live="polite">
+      <div class="feedback-head" id="feedback-head"></div>
+      <p id="feedback-text"></p>
+    </div>
+
+    <div class="powerbar" id="game-powerbar" aria-label="Ajudas"></div>
+
+    <button class="cta next" id="btn-next" type="button" hidden>PRÓXIMA</button>
+
+    <div class="handoff" id="handoff" hidden>
+      <div class="handoff-card" id="handoff-card">
+        <small class="handoff-kicker" id="handoff-kicker">VEZ DE</small>
+        <div class="handoff-avatar" id="handoff-avatar">🦊</div>
+        <h2 id="handoff-name">Jogador</h2>
+        <p id="handoff-hint">Passe o celular sem espiar a pergunta.</p>
+        <button class="cta" id="btn-handoff" type="button">ESTOU PRONTO</button>
+        <button class="link-btn" id="btn-handoff-cancel" type="button">Cancelar partida</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ RESULT ============ -->
+  <section class="screen screen-result" id="screen-result" data-screen="result" aria-label="Resultado">
+    <div class="result-card">
+      <div class="result-kicker" id="res-kicker">FASE CONCLUÍDA</div>
+      <div class="stars" id="res-stars" aria-label="Estrelas conquistadas"></div>
+      <h2 id="res-title">Boa!</h2>
+      <div class="result-score"><b id="res-score">0</b><span>pontos</span></div>
+      <div class="result-stats" id="res-stats"></div>
+      <div class="reward-row" id="res-rewards"></div>
+      <button class="cta" id="btn-result-primary" type="button">PRÓXIMA FASE</button>
+      <button class="ghost-btn" id="btn-result-secondary" type="button">REPETIR</button>
+      <button class="link-btn" data-go="trail" type="button">Voltar à trilha</button>
+    </div>
+  </section>
+
+  <!-- ============ MULTI SETUP ============ -->
+  <section class="screen" id="screen-multi-setup" data-screen="multi-setup" aria-label="Multijogador">
+    <header class="subhead">
+      <button class="icon-btn" data-back type="button" aria-label="Voltar">‹</button>
+      <div><h2>Jogar com amigos</h2><small>2 a 4 jogadores, um celular</small></div>
+      <div class="coin-chip"><i class="coin-ico" aria-hidden="true"></i><span class="coins-out">0</span></div>
+    </header>
+
+    <div class="panel">
+      <div class="panel-title">JOGADORES</div>
+      <div id="multi-players"></div>
+      <button class="ghost-btn" id="btn-add-player" type="button">+ ADICIONAR JOGADOR</button>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">COMO FUNCIONA</div>
+      <ul class="rules small">
+        <li><b>5 rodadas:</b> cada jogador responde uma pergunta por rodada, na sua vez.</li>
+        <li><b>Passe o celular:</b> entre as vezes aparece uma tela para ninguém espiar.</li>
+        <li><b>3 vidas:</b> errar ou deixar o tempo acabar custa uma. Sem vidas, você está fora.</li>
+        <li><b>Combo:</b> acertos seguidos multiplicam os pontos até ×3.</li>
+        <li><b>Vitória:</b> quem somar mais pontos ao final leva a coroa.</li>
+      </ul>
+    </div>
+
+    <button class="cta" id="btn-start-multi" type="button">
+      <span class="cta-icon" aria-hidden="true">🎮</span>
+      <span class="cta-text"><b>COMEÇAR PARTIDA</b><small>Todos prontos?</small></span>
+      <span class="cta-arrow" aria-hidden="true">›</span>
+    </button>
+  </section>
+
+  <!-- ============ ONLINE ============ -->
+  <section class="screen" id="screen-online" data-screen="online" aria-label="Jogar online">
+    <header class="subhead">
+      <button class="icon-btn" data-back type="button" aria-label="Voltar">‹</button>
+      <div><h2>Jogar online</h2><small>Cada um no seu celular</small></div>
+      <div class="coin-chip"><i class="coin-ico" aria-hidden="true"></i><span class="coins-out">0</span></div>
+    </header>
+
+    <div class="panel" id="online-entry">
+      <div class="panel-title">SEU JOGADOR</div>
+      <div class="mplayer" style="--pcolor: #39d9ff">
+        <button type="button" class="mplayer-avatar" id="online-avatar" aria-label="Trocar avatar">🦊</button>
+        <input type="text" id="online-name" maxlength="14" placeholder="Seu nome" autocomplete="off">
+      </div>
+
+      <button class="cta" id="btn-create-room" type="button">
+        <span class="cta-icon" aria-hidden="true">🏠</span>
+        <span class="cta-text"><b>CRIAR SALA</b><small>Gere um código e chame a galera</small></span>
+        <span class="cta-arrow" aria-hidden="true">›</span>
+      </button>
+
+      <div class="or-line"><span>ou entre em uma sala</span></div>
+
+      <div class="join-row">
+        <input type="text" id="input-room-code" maxlength="5" placeholder="CÓDIGO" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Código da sala">
+        <button class="ghost-btn" id="btn-join-room" type="button">ENTRAR</button>
+      </div>
+      <p class="hint" id="online-entry-status">Precisa de internet. Até 4 jogadores por sala.</p>
+    </div>
+
+    <div class="panel" id="online-room" hidden>
+      <div class="room-head">
+        <div>
+          <small>SALA</small>
+          <div class="room-code" id="room-code">·····</div>
+        </div>
+        <button class="ghost-btn" id="btn-copy-code" type="button">COPIAR</button>
+      </div>
+      <div class="online-status" id="online-status"><i class="dot"></i><span>Conectando…</span></div>
+      <div class="panel-title">JOGADORES <span id="online-count">1/4</span></div>
+      <div id="online-players"></div>
+      <button class="cta" id="btn-online-start" type="button" hidden>
+        <span class="cta-icon" aria-hidden="true">▶</span>
+        <span class="cta-text"><b>INICIAR PARTIDA</b><small id="online-start-sub">Chame pelo menos mais 1 jogador</small></span>
+        <span class="cta-arrow" aria-hidden="true">›</span>
+      </button>
+      <p class="hint" id="online-wait-hint" hidden>Aguardando o anfitrião iniciar…</p>
+      <button class="link-btn" id="btn-online-leave" type="button">Sair da sala</button>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">COMO FUNCIONA</div>
+      <ul class="rules small">
+        <li>Crie a sala e compartilhe o código de 5 letras com os amigos.</li>
+        <li>Cada um entra pelo próprio celular com o código.</li>
+        <li>Na sua vez a pergunta aparece só no seu aparelho, com tempo para responder.</li>
+        <li>Até 4 jogadores • 5 rodadas • 3 vidas • vence quem fizer mais pontos.</li>
+        <li class="hint">Sala pública: use apelidos e não compartilhe dados pessoais.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ MULTI RESULT ============ -->
+  <section class="screen screen-result" id="screen-multi-result" data-screen="multi-result" aria-label="Resultado do multijogador">
+    <div class="result-card">
+      <div class="result-kicker">FIM DA PARTIDA</div>
+      <div class="result-crown" id="multi-crown">🏆</div>
+      <h2 id="multi-winner">Jogador 1 venceu!</h2>
+      <div class="podium" id="multi-podium"></div>
+      <button class="cta" id="btn-multi-again" type="button">JOGAR DE NOVO</button>
+      <button class="ghost-btn" id="btn-multi-new" type="button">NOVA PARTIDA</button>
+      <button class="link-btn" data-go="home" type="button">Voltar ao início</button>
+    </div>
+  </section>
+
+  <!-- ============ RANKING ============ -->
+  <section class="screen" id="screen-ranking" data-screen="ranking" aria-label="Ranking">
+    <header class="subhead">
+      <button class="icon-btn" data-back type="button" aria-label="Voltar">‹</button>
+      <div><h2>Ranking</h2><small>Melhores partidas neste aparelho</small></div>
+      <div class="coin-chip"><i class="coin-ico" aria-hidden="true"></i><span class="coins-out">0</span></div>
+    </header>
+    <div class="panel" id="stats-panel"></div>
+    <div id="ranking-list" class="ranking-list"></div>
+  </section>
+
+  <!-- ============ SHOP ============ -->
+  <section class="screen" id="screen-shop" data-screen="shop" aria-label="Loja">
+    <header class="subhead">
+      <button class="icon-btn" data-back type="button" aria-label="Voltar">‹</button>
+      <div><h2>Loja</h2><small>Cada ajuda dura uma partida</small></div>
+      <div class="coin-chip"><i class="coin-ico" aria-hidden="true"></i><span class="coins-out">0</span></div>
+    </header>
+    <div id="shop-list" class="shop-list"></div>
+    <p class="hint">Você ganha moedas ao acertar perguntas e concluir fases. Quanto mais estrelas, mais moedas.</p>
+  </section>
+
+  <!-- ============ SETTINGS ============ -->
+  <section class="screen" id="screen-settings" data-screen="settings" aria-label="Perfil e ajustes">
+    <header class="subhead">
+      <button class="icon-btn" data-back type="button" aria-label="Voltar">‹</button>
+      <div><h2>Perfil</h2><small>Seu apelido e preferências</small></div>
+      <div class="coin-chip"><i class="coin-ico" aria-hidden="true"></i><span class="coins-out">0</span></div>
+    </header>
+
+    <div class="panel">
+      <label class="field-label" for="input-name">APELIDO</label>
+      <input class="text-input" id="input-name" maxlength="18" autocomplete="nickname" placeholder="Como quer aparecer no ranking?">
+      <button class="cta small" id="btn-save-name" type="button">SALVAR APELIDO</button>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">AVATAR</div>
+      <div class="avatar-grid" id="avatar-grid"></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">PREFERÊNCIAS</div>
+      <button class="toggle-row" id="toggle-sound" type="button"><span>🔊 Som e efeitos</span><i class="switch"></i></button>
+      <button class="toggle-row" id="toggle-music" type="button"><span>🎵 Música nas perguntas</span><i class="switch"></i></button>
+      <button class="toggle-row" id="toggle-motion" type="button"><span>✨ Reduzir animações</span><i class="switch"></i></button>
+      <button class="toggle-row" id="toggle-vibe" type="button"><span>📳 Vibração</span><i class="switch"></i></button>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">DADOS</div>
+      <button class="ghost-btn danger" id="btn-reset" type="button">ZERAR PROGRESSO</button>
+      <p class="hint">Apaga apelido, fases, moedas e ranking deste aparelho.</p>
+    </div>
+
+    <p class="hint center">Mente Confusa • versão 1.0<br>Feito para jogar no celular, funciona offline.</p>
+  </section>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<canvas id="fx" aria-hidden="true"></canvas>
+<div class="modal-root" id="modal-root" hidden>
+  <div class="modal-backdrop" data-modal-close></div>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <h3 id="modal-title">Título</h3>
+    <div class="modal-body" id="modal-body"></div>
+    <div class="modal-actions" id="modal-actions"></div>
+  </div>
+</div>
+
+<script src="js/data.js?v=7"></script>
+<script src="js/core.js?v=7"></script>
+<script src="js/game.js?v=7"></script>
+</body>
+</html>

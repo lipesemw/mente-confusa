@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Mente Confusa">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#7d3cff"/>
+      <stop offset="0.55" stop-color="#b25cff"/>
+      <stop offset="1" stop-color="#39d9ff"/>
+    </linearGradient>
+    <linearGradient id="mark" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#e9e2ff"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  <circle cx="256" cy="248" r="150" fill="#120a2a" opacity="0.28"/>
+  <text x="256" y="330" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="300" font-weight="900" fill="url(#mark)">?</text>
+  <circle cx="366" cy="140" r="26" fill="#ffd166"/>
+  <circle cx="140" cy="372" r="16" fill="#ff5ca8"/>
+</svg>
