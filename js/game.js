@@ -2321,7 +2321,15 @@
     setScreen('home');
     renderHome();
 
-    if (!s.name) setTimeout(openOnboarding, 450);
+    if (!s.name) {
+      setTimeout(function () {
+        if (window.MC_INTRO_ACTIVE) {
+          document.addEventListener('mc:introend', function () { openOnboarding(); }, { once: true });
+        } else {
+          openOnboarding();
+        }
+      }, 450);
+    }
 
     // PWA (só funciona quando servido por http/https)
     if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {

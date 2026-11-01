@@ -1,19 +1,22 @@
 /* Mente Confusa — offline + atualização automática.
    HTML: rede primeiro (para pegar versões novas), cache como reserva.
    Estáticos: cache primeiro com revalidação em segundo plano. */
-const CACHE = 'mente-confusa-v6';
+const CACHE = 'mente-confusa-v9';
 const ASSETS = [
   './',
   './index.html',
-  './css/style.css',
-  './js/data.js',
-  './js/core.js',
-  './js/game.js',
+  './css/style.css?v=11',
+  './js/intro.js?v=8',
+  './js/data.js?v=8',
+  './js/core.js?v=8',
+  './js/game.js?v=9',
   './vendor/mqtt.min.js',
   './manifest.webmanifest',
   './icons/icon-192.png?v=6',
   './icons/icon-512.png?v=6',
   './icons/icon-maskable-512.png?v=6',
+  './video/intro.mp4?v=7',
+  './video/intro-poster.jpg?v=7',
 ];
 
 self.addEventListener('install', (event) => {
